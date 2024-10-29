@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+// namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnimalsController;
@@ -16,5 +16,5 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/animals', [AnimalsController::class, 'index']);
 Route::post('/animals', [AnimalsController::class, 'store']);
-Route::put('/animals', [AnimalsController::class, 'update']);
-Route::delete('/animals', [AnimalsController::class, 'delete']);
+Route::put('/animals/{index}', [AnimalsController::class, 'update']);
+Route::delete('/animals/{index}', [AnimalsController::class, 'destroy']);

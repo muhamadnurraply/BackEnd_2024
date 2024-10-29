@@ -1,68 +1,67 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\Echo_;
 
 class AnimalsController extends Controller
 {
-    // We use session to mimic the storage of animals, like the array in the previous example
+    private $animals =[];
+
     public function __construct()
     {
-        if (!session()->has('animals')) {
-            session()->put('animals', ['macan', 'kuskus', 'biawak']);
+        $this->animals = ['kuskus', 'biawak', 'kadal gunung'];
+    }
+
+
+    public function index() {
+        echo "List my animals:\n";
+        foreach ($this->animals as $index => $animal) {
+            echo ">> " . $animal . "\n";
         }
     }
 
-    // Display all animals
-    public function index()
-    {
-        $animals = session('animals');
-        if (!empty($animals)) {
-            return view('animals.index', ['animals' => $animals]);
-        } else {
-            return "Tidak ada data namaa hewannya....<br>";
-        }
-    }
-
-    // Add a new animal
     public function store(Request $request)
     {
         $newAnimal = $request->input('name');
-        $animals = session('animals');
-        $animals[] = $newAnimal;
-        session()->put('animals', $animals);
-        
-        return "$newAnimal berhasil ditambahkan...<br>";
+        $this->animals[] = $newAnimal;
+        echo " New animal has added '$newAnimal'\n\n";
+        $this->index();
     }
 
-    // Update an existing animal
     public function update(Request $request, $index)
     {
-        $animals = session('animals');
-        if (isset($animals[$index])) {
-            $newAnimal = $request->input('name');
-            $oldAnimal = $animals[$index];
-            $animals[$index] = $newAnimal;
-            session()->put('animals', $animals);
-            
-            return "$oldAnimal berhasil diganti dengan $newAnimal<br>";
-        } else {
-            return "Data hewan tidak ditemukan...<br>";
+        $newAnimal = $request->input('name');
+
+        if (isset($this->animals[$index])) {
+            $oldAnimal = $this->animals[$index];
+            $this->animals[$index] = $newAnimal;
+
+            echo " animal '$oldAnimal' has been modified '$newAnimal'. \n\n" ;
         }
+
+        else {
+            echo "This animal $index not define. \n\n";
+        }
+
+        $this->index();
+
     }
 
-    // Delete an animal
-    public function delete($index)
-    {
-        $animals = session('animals');
-        if (isset($animals[$index])) {
-            $deletedAnimal = $animals[$index];
-            unset($animals[$index]);
-            session()->put('animals', array_values($animals));  // Reset array index
-            return "$deletedAnimal sudah hilaaang....<br>";
+    public function destroy($index) {
+        if (isset($this->animals[$index])) {
+            $deletedAnimal = $this->animals[$index];
+            
+            unset($this->animals[$index]);
+            
+            echo "animal '$deletedAnimal' has deleted.\n\n";
         } else {
-            return "Data hewan tidak ditemukan...<br>";
+            echo "this animal $index not define.\n\n";
         }
+        
+        $this->index();
     }
+    
 }
+
+
